@@ -1012,7 +1012,7 @@ class EnhancedTalkingCat {
         this.webcam = document.getElementById('webcam');
 
         // FIXED: Use environment variable or fallback
-        this.GEMINI_API_KEY = 'AIzaSyD1XjBNqsYtGL8t0AC1cfDGkGv3ZF8A650'; // You should use environment variables
+        this.GEMINI_API_KEY = 'GEMINI_API_KEY'; // You should use environment variables
 
         this.setupKeyboardListeners();
         this.setupChatInput();
@@ -3040,4 +3040,5 @@ setTimeout(() => {
 // Export for module systems (if needed)
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { EnhancedTalkingCat };
+
 }
