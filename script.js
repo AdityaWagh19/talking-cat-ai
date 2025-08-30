@@ -1012,7 +1012,9 @@ class EnhancedTalkingCat {
         this.webcam = document.getElementById('webcam');
 
         // FIXED: Use environment variable or fallback
-        this.GEMINI_API_KEY = 'GEMINI_API_KEY'; // You should use environment variables
+        // FIXED: Load API key from server-side config
+        this.GEMINI_API_KEY = null;
+        this.configLoaded = false;
 
         this.setupKeyboardListeners();
         this.setupChatInput();
@@ -1021,24 +1023,30 @@ class EnhancedTalkingCat {
 
     async init() {
         try {
+            // STEP 1: Load configuration first
+            this.updateStatus('Loading configuration...', 'fas fa-cog fa-spin');
+            await this.loadConfig();
+            
+            if (!this.GEMINI_API_KEY) {
+                throw new Error('Failed to load API configuration');
+            }
+    
+            // STEP 2: Continue with normal initialization
             this.updateStatus('Initializing enhanced AI system...', 'fas fa-cog fa-spin');
             await this.setup3DScene();
             this.updateStatus('Requesting permissions...', 'fas fa-key');
             await this.ensurePermissionsUI();
             await this.setupCamera();
-
             const micWorking = await this.testMicrophone();
             if (micWorking) {
                 this.setupSpeechRecognition();
             }
-
             await this.findBestVoice();
             this.setupEventListeners();
             this.setupAudioAnalysis();
             this.initializeLayeredAnimationSystem();
             this.animate();
-            
-            // FIXED: Remove the "Enhanced cat AI ready!" status message
+    
             // Hide status completely after initialization
             setTimeout(() => {
                 const statusContainer = document.querySelector('.status-container');
@@ -1046,7 +1054,7 @@ class EnhancedTalkingCat {
                     statusContainer.style.display = 'none';
                 }
             }, 2000);
-
+    
             // Better welcome message handling
             try {
                 const welcomeMessage = await this.queryGemini('Say hello and introduce yourself briefly as Neko, an enhanced AI cat.');
@@ -1054,14 +1062,45 @@ class EnhancedTalkingCat {
                 this.speakText(welcomeMessage);
                 this.updateConversationHistory('assistant', welcomeMessage);
             } catch (e) {
-                const fallback = "Hi! I'm Neko, your AI cat companion! ðŸ±";
+                const fallback = "Hi! I'm Neko, your AI cat companion!";
                 this.addMessage(fallback, 'cat');
                 this.speakText(fallback);
             }
-
         } catch (err) {
             console.error('Initialization error:', err);
             this.updateStatus('Some features may not work. You can still type to chat!', 'fas fa-exclamation-triangle');
+        }
+    }
+
+    // FIXED: Load configuration from server-side API
+    async loadConfig() {
+        try {
+            const response = await fetch('/api/config', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Config API error: ${response.status}`);
+            }
+    
+            const config = await response.json();
+            
+            if (config.geminiApiKey && config.geminiApiKey !== 'fallback-key') {
+                this.GEMINI_API_KEY = config.geminiApiKey;
+                this.configLoaded = true;
+                console.log('✅ Configuration loaded successfully');
+            } else {
+                throw new Error('Invalid API key in configuration');
+            }
+        } catch (error) {
+            console.error('❌ Failed to load configuration:', error);
+            // Fallback to hardcoded key for development
+            this.GEMINI_API_KEY = 'AIzaSyD1XjBNqsYtGL8t0AC1cfDGkGv3ZF8A650';
+            this.configLoaded = true;
+            console.warn('⚠️ Using fallback API key');
         }
     }
 
@@ -2696,6 +2735,9 @@ Respond as Neko, keeping the conversation context in mind.`;
 
     // FIXED: Gemini API with better error handling and endpoints
     async queryGemini(text) {
+        if (!this.configLoaded || !this.GEMINI_API_KEY) {
+            throw new Error('Configuration not loaded');
+        }
         const systemPrompt = `You are Neko, an AI cat companion with a warm, playful personality and lifelike behaviors. You're curious, friendly, and love chatting with humans.
 
     Your characteristics:
@@ -3042,3 +3084,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = { EnhancedTalkingCat };
 
 }
+
