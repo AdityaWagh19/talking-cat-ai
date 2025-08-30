@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neko - AI Cat Companion</title>
+    
+    <!-- Patrick Hand Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand:wght@400&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <h1 class="main-title">
+            <span class="hello-text">Hello,</span>
+            <span class="neko-text">I am Neko!</span>
+        </h1>
+        <p class="subtitle">Meow! Here to make your day purrfect!</p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+        <!-- Cat Model Panel -->
+        <section class="cat-model-panel">
+            <div class="cat-model-container" id="cat-container">
+                <!-- Three.js canvas will be inserted here -->
+            </div>
+            <p class="cat-label">Interactive 3D Cat Model</p>
+            
+            <!-- Cat Quick Actions -->
+            <div class="cat-quick-actions">
+                <button class="cat-action-btn walk-btn" data-action="walk" title="Walk" aria-label="Make cat walk">
+                    <i class="fas fa-walking"></i>
+                </button>
+                <button class="cat-action-btn run-btn" data-action="run" title="Run" aria-label="Make cat run">
+                    <i class="fas fa-running"></i>
+                </button>
+                <button class="cat-action-btn sit-btn" data-action="sit" title="Sit" aria-label="Make cat sit">
+                    <i class="fas fa-chair"></i>
+                </button>
+                <button class="cat-action-btn jump-btn" data-action="jump" title="Jump" aria-label="Make cat jump">
+                    <i class="fas fa-arrow-up"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Webcam Panel -->
+        <section class="webcam-panel">
+            <div class="webcam-header">
+                <i class="fas fa-video"></i>
+                <span>Purrfect You!</span>
+            </div>
+            <div class="webcam-container">
+                <video id="webcam" autoplay muted playsinline></video>
+                <div class="webcam-overlay">
+                    <button class="enable-webcam-btn" id="enable-webcam">
+                        <i class="fas fa-video"></i>
+                        Enable Webcam
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chat Panel -->
+        <section class="chat-panel">
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will be added here dynamically -->
+            </div>
+            
+            <div class="chat-input-area">
+                <input type="text" class="chat-input" id="chat-input" placeholder="Type your message to Neko..." maxlength="500">
+                <button class="send-btn" id="send-btn" disabled aria-label="Send message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+                <button class="mic-btn" id="mic-btn" title="Hold Space or click to talk" aria-label="Voice input">
+                    <i class="fas fa-microphone" id="mic-icon"></i>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Status Container -->
+    <div class="status-container">
+        <div class="status" id="status">
+            <i class="fas fa-info-circle" id="status-icon"></i>
+            <span>Loading...</span>
+        </div>
+    </div>
+
+    <!-- Permission Modal -->
+    <div class="modal" id="permission-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-microphone"></i>
+            </div>
+            <h2>Permissions Required</h2>
+            <p>Neko needs access to your camera and microphone to provide the best interactive experience. Your privacy is important to us.</p>
+            <button class="permission-btn" id="grant-permission">
+                <i class="fas fa-check"></i>
+                Grant Permissions
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
